@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db_service:
+    image: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - factory_hub_network
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_DB_ROOT_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_DB_ROOT_PASS}
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: always
+
+  fastapi_app:
+    build: .
+    container_name: factory_hub_R
+    ports:
+      - "8200:8200"
+    networks:
+      - factory_hub_network
+    env_file:
+      - .env
+    volumes:
+      - ./app:/app
+    restart: always
+    depends_on:
+      db_service:
+        condition: service_healthy
+
+networks:
+  factory_hub_network:
+    external: true
