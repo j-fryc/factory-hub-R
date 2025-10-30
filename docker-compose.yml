@@ -10,6 +10,7 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_DB_ROOT_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_DB_ROOT_PASS}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 30s
@@ -21,7 +22,7 @@ services:
     build: .
     container_name: factory_hub_R
     ports:
-      - "8200:8200"
+      - "8300:8300"
     networks:
       - factory_hub_network
     env_file:
