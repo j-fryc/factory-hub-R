@@ -34,6 +34,63 @@ services:
       db_service:
         condition: service_healthy
 
+  rabbit-mq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - factory_hub_network
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: "rabbitmq-diagnostics -q check_running && rabbitmq-diagnostics -q check_port_listener 5672"
+      interval: 20s
+      timeout: 10s
+      retries: 10
+
+  db-sync-worker-product:
+    build:
+      context: .
+      dockerfile: Dockerfile-db-sync
+    depends_on:
+      rabbit-mq:
+        condition: service_healthy
+      db_service:
+        condition: service_healthy
+    networks:
+      - factory_hub_network
+    env_file:
+      - .env
+    environment:
+      - WORKER_TYPE=product
+    restart: on-failure
+
+  db-sync-worker-product-type:
+    build:
+      context: .
+      dockerfile: Dockerfile-db-sync
+    depends_on:
+      rabbit-mq:
+        condition: service_healthy
+      db_service:
+        condition: service_healthy
+    networks:
+      - factory_hub_network
+    env_file:
+      - .env
+    environment:
+      - WORKER_TYPE=product_type
+    restart: on-failure
+
+
 networks:
   factory_hub_network:
     external: true
+
+
+volumes:
+  rabbitmq_data:

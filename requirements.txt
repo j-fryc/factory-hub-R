@@ -5,3 +5,4 @@ pymongo~=4.15.3
 beanie~=2.0.0
 SQLAlchemy~=2.0.37
 sqlmodel~=0.0.22
+aio_pika~=9.5.7
