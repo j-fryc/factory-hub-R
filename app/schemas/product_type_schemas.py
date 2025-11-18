@@ -1,19 +1,23 @@
 from typing import Optional
 
-from sqlmodel import SQLModel
-from pydantic import ConfigDict, BaseModel
-import uuid as uuid_pkg
+from app.schemas.base_schemas import FetchDTO, UpdateDTO, CreateDTO, DeleteDTO, OutputDTO
 
 
-class ProductTypeOut(BaseModel):
-    id: uuid_pkg.UUID
-    type_name: str
+class ProductTypeOut(OutputDTO):
     description: str
 
-    model_config = ConfigDict(from_attributes=True)
 
-
-class ProductTypeIn(BaseModel):
-    id: Optional[uuid_pkg.UUID] = None
-    type_name: Optional[str] = None
+class ProductTypeFetch(FetchDTO):
     description: Optional[str] = None
+
+
+class ProductTypeCreate(CreateDTO):
+    description: str
+
+
+class ProductTypeUpdate(UpdateDTO):
+    description: Optional[str] = None
+
+
+class ProductTypeDelete(DeleteDTO):
+    pass
