@@ -29,6 +29,7 @@ class OutboxEventDTO(BaseModel):
 
 class WorkerTypes(StrEnum):
     Product = 'product'
-    ProductType = 'product_type'
+    ProductType = 'producttype'
+
 
 WorkerTypeValue = Literal[tuple(member.value for member in WorkerTypes)]
